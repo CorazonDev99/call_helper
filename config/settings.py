@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'common',
     'drf_spectacular',
     'djoser',
+    'breaks',
 
 ]
 
