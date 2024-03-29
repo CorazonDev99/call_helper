@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from breaks.models import organisations
+from breaks.models import organisations, groups
 
 
 @admin.register(organisations.Organisation)
@@ -8,7 +8,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'director']
 
 
-@admin.register(organisations.Group)
+@admin.register(groups.Group)
 class OrganisationAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'manager', 'min_active']
 
