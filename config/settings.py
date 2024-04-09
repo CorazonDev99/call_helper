@@ -28,11 +28,16 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'common',
+    'users',
     'drf_spectacular',
     'djoser',
     'breaks',
+    'phonenumber_field'
 
 ]
+
+AUTH_USER_MODEL = "users.User"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
