@@ -28,11 +28,16 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'common',
+    'users',
     'drf_spectacular',
     'djoser',
     'breaks',
+    'phonenumber_field'
 
 ]
+
+AUTH_USER_MODEL = "users.User"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -120,8 +125,8 @@ AUTH_PASSWORD_VALIDATORS = [
 #########################
 #LOCALIZATION
 #########################
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ru'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
@@ -155,8 +160,8 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 
     'SERVE_PERMISSIONS': [
-    'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.permissions.IsAuthenticated'],
+        'rest_framework.permissions.IsAuthenticated'
+    ],
 
     'SERVE_AUTHENTICATION': [
         'rest_framework.authentication.BasicAuthentication'],
