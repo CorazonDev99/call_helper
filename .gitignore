@@ -165,3 +165,7 @@ cython_debug/
 
 
 static/
+
+*/migrations/*
+!*/migrations/__init__.py
+

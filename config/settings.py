@@ -164,7 +164,8 @@ SPECTACULAR_SETTINGS = {
     ],
 
     'SERVE_AUTHENTICATION': [
-        'rest_framework.authentication.BasicAuthentication'],
+        'rest_framework.authentication.BasicAuthentication'
+    ],
 
     'SWAGGER_UI_SETTINGS': {
         'DeepLinking': True,
