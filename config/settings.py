@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'djoser',
     'breaks',
+    'organisations',
     'phonenumber_field'
 
 ]
@@ -164,7 +165,8 @@ SPECTACULAR_SETTINGS = {
     ],
 
     'SERVE_AUTHENTICATION': [
-        'rest_framework.authentication.BasicAuthentication'],
+        'rest_framework.authentication.BasicAuthentication'
+    ],
 
     'SWAGGER_UI_SETTINGS': {
         'DeepLinking': True,
