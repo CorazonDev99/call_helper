@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 
-from breaks.models import organisations, groups, replacements, dicts, breaks
+from breaks.models import replacements, dicts, breaks
 
 
 #############################
@@ -18,34 +18,9 @@ class ReplacementEmployeeInline(StackedInline):
 #############################
 # MODELS
 #############################
-@admin.register(organisations.Organisation)
-class OrganisationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'director',)
-    filter_horizontal = ('employees',)
-
-@admin.register(groups.Group)
-class GroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'manager', 'min_active', 'replacement_count')
-    list_display_links = ('id', 'name',)
-    search_fields = ('name',)
-
-    def replacement_count(self, obj):
-        return obj.replacements_count
-
-
-    replacement_count.short_description = 'Количество смен'
-
-    def get_queryset(self, request):
-        queryset = groups.Group.objects.annotate(
-            replacements_count=Count('replacements__id')
-        )
-        return queryset
-
-
 @admin.register(replacements.Replacement)
 class ReplacementAdmin(admin.ModelAdmin):
     list_display = ('id', 'group', 'date', 'break_start', 'break_end', 'break_max_duration',)
-    autocomplete_fields = ('group',)
     inlines = (ReplacementEmployeeInline,)
 
 
@@ -67,6 +42,8 @@ class BreakAdmin(admin.ModelAdmin):
     def replacement_link(self, obj):
         link = reverse('admin:breaks_replacement_change', args=[obj.replacement.id])
         return format_html('<a href="{}">{}</a>', link, obj.replacement)
+
+
 
 
 

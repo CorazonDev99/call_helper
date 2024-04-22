@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'djoser',
     'breaks',
+    'organisations',
     'phonenumber_field'
 
 ]
