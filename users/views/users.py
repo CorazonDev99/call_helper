@@ -12,6 +12,8 @@ from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from common.views.mixins import ListViewSet
+from users.permissions import IsNotCorporate
 from users.serializers.api import users as user_s
 
 User = get_user_model()
@@ -32,8 +34,8 @@ class RegistrationView(generics.CreateAPIView):
         summary='Смена пароля', tags=['Аутентификация & Авторизация']),
 )
 class ChangePasswordView(APIView):
-    def post(self, request):
 
+    def post(self, request):
         user = request.user
         serializer = user_s.ChangePasswordSerializer(
             instance=user, data=request.data
@@ -45,10 +47,11 @@ class ChangePasswordView(APIView):
 
 @extend_schema_view(
     get=extend_schema(summary='Профиль пользователя', tags=['Пользователи']),
+    put=extend_schema(summary='Изменить профиль пользователя', tags=['Пользователи']),
     patch=extend_schema(summary='Изменить частично профиль пользователя', tags=['Пользователи']),
 )
-
 class MeView(RetrieveUpdateAPIView):
+    permission_classes = [IsNotCorporate]
     queryset = User.objects.all()
     serializer_class = user_s.MeSerializer
     http_method_names = ('get', 'patch')
@@ -61,3 +64,16 @@ class MeView(RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
+
+@extend_schema_view(
+    list=extend_schema(summary='Список пользователей Search', tags=['Словари']),
+)
+class UserListSearchView(ListViewSet):
+    queryset = User.objects.exclude(
+        Q(is_superuser=True) | Q(is_corporate_account=True)
+    )
+    serializer_class = user_s.UserSearchListSerializer
+    filter_backends = (
+        SearchFilter,
+    )
+    search_fields = ('last_name', 'email', 'username',)

@@ -6,7 +6,7 @@ from users.views import users
 router = DefaultRouter()
 
 
-# router.register(r'search', users.UserListSearchView, 'users-search')
+router.register(r'search', users.UserListSearchView, 'users-search')
 
 urlpatterns = [
     path('users/reg/', users.RegistrationView.as_view(), name='reg'),
@@ -14,4 +14,4 @@ urlpatterns = [
     path('users/change-passwd/', users.ChangePasswordView.as_view(), name='change_passwd'),
 ]
 
-# urlpatterns += path('users/', include(router.urls)),
+urlpatterns += path('users/', include(router.urls)),

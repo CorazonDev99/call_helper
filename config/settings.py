@@ -1,20 +1,20 @@
-import os
 from datetime import timedelta
 
 import environ
+import os
 root = environ.Path(__file__) - 2
-
 env = environ.Env()
+
 environ.Env.read_env(env.str(root(), '.env'))
 
 BASE_DIR = root()
+
 
 SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 ALLOWED_HOSTS = env.str('ALLOWED_HOSTS', default='').split(' ')
 
-
-
+# base
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,23 +22,36 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #pacages
+]
+
+# packages
+INSTALLED_APPS += [
     'rest_framework',
     'django_filters',
     'corsheaders',
+    'djoser',
+    'phonenumber_field',
+    'django_generate_series',
+]
+
+# apps
+INSTALLED_APPS += [
     'api',
     'common',
     'users',
-    'drf_spectacular',
-    'djoser',
     'breaks',
     'organisations',
-    'phonenumber_field'
-
 ]
 
-AUTH_USER_MODEL = "users.User"
+# Custom user model
+AUTH_USER_MODEL = 'users.User'
+# Custom backend
+AUTHENTICATION_BACKENDS = ('users.backends.AuthBackend',)
 
+# after apps
+INSTALLED_APPS += [
+    'drf_spectacular',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'crum.CurrentRequestUserMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -87,11 +101,16 @@ DATABASES = {
     },
 }
 
+
+###########################
+# DJANGO REST FRAMEWORK
+###########################
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',),
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
 
@@ -101,13 +120,10 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FileUploadParser',
     ],
-
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-
-
+    'DEFAULT_PAGINATION_CLASS': 'common.pagination.BasePagination',
 }
-
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -123,64 +139,73 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#########################
-#LOCALIZATION
-#########################
-LANGUAGE_CODE = 'ru'
-TIME_ZONE = 'Europe/Moscow'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+######################
+# LOCALIZATION
+######################
+LANGUAGE_CODE = 'ru-RU'
+TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-#########################
-#STATIC AND MEDIA
-#########################
-STATIC_URL = 'static/'
+
+######################
+# STATIC AND MEDIA
+######################
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-
-#########################
-#CORSHEADERS
-#########################
+######################
+# CORS HEADERS
+######################
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 CSRF_COOKIE_SECURE = False
 
 
-#########################
-#DRF SPECTACULAR
-#########################
+######################
+# DRF SPECTACULAR
+######################
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Call Helper',
-    'DESCRIPTION': 'Your project description',
+        'DESCRIPTION': 'Call Helper',
     'VERSION': '1.0.0',
 
     'SERVE_PERMISSIONS': [
-        'rest_framework.permissions.IsAuthenticated'
+        'rest_framework.permissions.IsAuthenticated',
     ],
 
     'SERVE_AUTHENTICATION': [
-        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework.authentication.BasicAuthentication',
+
     ],
 
     'SWAGGER_UI_SETTINGS': {
-        'DeepLinking': True,
-        'DisplayOperationId': True,
+        'deepLinking': True,
+        "displayOperationId": True,
+        "syntaxHighlight.active": True,
+        "syntaxHighlight.theme": "arta",
+        "defaultModelsExpandDepth": -1,
+        "displayRequestDuration": True,
+        "filter": True,
+        "requestSnippetsEnabled": True,
     },
 
     'COMPONENT_SPLIT_REQUEST': True,
     'SORT_OPERATIONS': False,
+
+    'ENABLE_DJANGO_DEPLOY_CHECK': False,
+    'DISABLE_ERRORS_AND_WARNINGS': True,
 }
 
-
-#########################
-#DJOSER
-#########################
+#######################
+# DJOSER
+#######################
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
