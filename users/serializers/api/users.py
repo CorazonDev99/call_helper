@@ -126,3 +126,13 @@ class MeUpdateSerializer(serializers.ModelSerializer):
         profile_serializer.save()
 
 
+class UserSearchListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'email',
+            'full_name',
+        )
